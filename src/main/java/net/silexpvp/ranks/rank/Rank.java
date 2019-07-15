@@ -12,11 +12,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import net.silexpvp.ranks.RanksPlugin;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Data
 public class Rank {
@@ -127,17 +127,13 @@ public class Rank {
     public String getMainColor() {
         if (prefix.isEmpty()) return "";
 
-        char lastCode = 'f';
-        for (String character : prefix.split("&")) {
-            if (!character.isEmpty()) {
-                if (ChatColor.getByChar(character.toCharArray()[0]) != null) {
-                    if (lastCode != 'o') {
-                        lastCode = character.toCharArray()[0];
-                    }
-                }
-            }
-        }
+        AtomicReference<Character> lastCode = new AtomicReference<>('f');
+        Arrays.stream(prefix.split("&")).filter(not(String::isEmpty)).map(string -> string.toCharArray()[0]).flatMap(character -> Stream.of(character).map(ChatColor::getByChar).filter(Objects::nonNull).map(color -> character)).filter(code -> code != 'o').forEach(lastCode::set);
 
-        return ChatColor.getByChar(lastCode).toString();
+        return ChatColor.getByChar(lastCode.get()).toString();
+    }
+
+    private <T> Predicate<T> not(Predicate<T> t) {
+        return t.negate();
     }
 }
