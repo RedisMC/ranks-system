@@ -18,11 +18,6 @@ public class RankListArgument extends CommandArgument<RanksPlugin> {
     }
 
     @Override
-    public boolean isAsync() {
-        return false;
-    }
-
-    @Override
     public void execute(CommandSender sender, String label, String[] args) {
         new RankListMenu().open((Player) sender);
     }

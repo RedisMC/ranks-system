@@ -22,6 +22,7 @@ public class RankCommand extends CommandParent<RanksPlugin> {
         addArgument(new RankPrefixArgument(this));
         addArgument(new RankSuffixArgument(this));
         addArgument(new RankListArgument(this));
+        addArgument(new RankMigrateArgument(this));
     }
 
     @Override

@@ -56,7 +56,9 @@ public class Rank {
         }
 
         if (document.containsKey("parents")) {
-            ((ArrayList<String>) document.get("parents")).stream().map(plugin.getRankManager()::getByName).filter(Objects::nonNull).forEach(parents::add);
+            for (String rank : (ArrayList<String>) document.get("parents")) {
+                System.out.println(rank);
+            }
         }
     }
 
@@ -108,9 +110,7 @@ public class Rank {
     }
 
     public boolean canParent(Rank rank) {
-        if (parents.contains(rank) || rank.getParents().contains(this)) return false;
-
-        return parents.stream().allMatch(rank::canParent);
+        return rank != this;
     }
 
     public boolean isParent(Rank rank) {
@@ -124,13 +124,13 @@ public class Rank {
         return permissions;
     }
 
-    public String getMainColor() {
-        if (prefix.isEmpty()) return "";
+    public ChatColor getMainColor() {
+        if (prefix.isEmpty()) return ChatColor.WHITE;
 
         AtomicReference<Character> lastCode = new AtomicReference<>('f');
         Arrays.stream(prefix.split("&")).filter(not(String::isEmpty)).map(string -> string.toCharArray()[0]).flatMap(character -> Stream.of(character).map(ChatColor::getByChar).filter(Objects::nonNull).map(color -> character)).filter(code -> code != 'o').forEach(lastCode::set);
 
-        return ChatColor.getByChar(lastCode.get()).toString();
+        return ChatColor.getByChar(lastCode.get());
     }
 
     private <T> Predicate<T> not(Predicate<T> t) {
