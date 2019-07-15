@@ -7,6 +7,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.UpdateOptions;
 
 import org.bson.Document;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import net.silexpvp.ranks.RanksPlugin;
@@ -37,6 +38,10 @@ public class Rank {
 
     public Rank(Document document) {
         name = (String) document.get("_id");
+
+        if (document.containsKey("weight")) {
+            weight = document.getInteger("weight");
+        }
 
         if (document.containsKey("prefix")) {
             prefix = document.getString("prefix");
@@ -117,5 +122,22 @@ public class Rank {
         parents.stream().map(Rank::getEffectivePermissions).forEach(permissions::addAll);
 
         return permissions;
+    }
+
+    public String getMainColor() {
+        if (prefix.isEmpty()) return "";
+
+        char lastCode = 'f';
+        for (String character : prefix.split("&")) {
+            if (!character.isEmpty()) {
+                if (ChatColor.getByChar(character.toCharArray()[0]) != null) {
+                    if (lastCode != 'o') {
+                        lastCode = character.toCharArray()[0];
+                    }
+                }
+            }
+        }
+
+        return ChatColor.getByChar(lastCode).toString();
     }
 }
