@@ -1,0 +1,6 @@
+name: RankSystem
+author: "javovich"
+main: net.silexpvp.ranks.RanksPlugin
+version: "1.0-RELEASE"
+depend:
+  - "Nightmare"
